@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatApp</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="icon" href="/img/favicon.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/4.0.1/mustache.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.4/qs.min.js"></script>
+</head>
+<body>
+    <div class="centered-form">
+        <div class="centered-form__box">
+            <h1>Join</h1>
+            <form action="" method="">
+                <label>Display Name</label>
+                <input type="text" name="username" id="username" placeholder="Display Name" required />
+                <label>Room</label>
+                <input type="text" name="room" id="room" placeholder="Chat Room" required />
+            </form>
+            <button id="join">Join</button>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        socket.on('message', (welcome)=>{
+    console.log(welcome)
+    const html = Mustache.render($messageTemplate, {
+        createdAt: moment(welcome.createdAt).format('h:mm a'),
+        message: welcome.text
+    })
+    $messages.insertAdjacentHTML('beforeend', html)
+    // var p = document.createElement("p")
+    //     p.classList.add('container')
+    //     p.textContent = welcome
+    //     document.body.appendChild(p)
+})
+        //joining chat
+        document.querySelector('#join').addEventListener('click', (e)=>{
+            const name = document.getElementById('username').value
+            const room = document.getElementById('room').value
+            console.log(name, room)
+            //to connect to the server
+            const socket = io()
+            socket.emit('join', {name, room}, ()=>{
+                document.location.href = name+'/chat/'+room
+            })
+            
+            
+        })
+    </script>
+    <!-- <script src="/js/chat.js"></script> -->
+</body>
+</html>
